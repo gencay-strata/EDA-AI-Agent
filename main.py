@@ -66,7 +66,7 @@ if st.session_state.clicked[1]:
         )
 
         #Functions main
-         
+        @st.cache_data 
         def function_agent():
             st.write("**Data Overview**")
             st.write("The first rows of your dataset look like this:")
@@ -118,7 +118,7 @@ if st.session_state.clicked[1]:
             st.write(new_features)
             return
 
-         
+        @st.cache_data 
         def function_question_variable():
             st.line_chart(df, y =[user_question_variable])
             summary_statistics = pandas_agent.run(f"Give me a summary of the statistics of {user_question_variable}")
