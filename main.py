@@ -1,6 +1,4 @@
 #Import required libraries
-import os
-from dotenv import load_dotenv, find_dotenv
 import streamlit as st
 import pandas as pd
 from langchain.llms import OpenAI
@@ -11,11 +9,6 @@ import seaborn as sns
 # Set your API key directly
 
 apikey = st.secrets["openai"]["api_key"]
-
-# Load environment variables
-load_dotenv(find_dotenv())
-
-
 
 #Title
 st.title('AI Assistant for Data Science 🤖')
