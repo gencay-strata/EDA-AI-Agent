@@ -60,9 +60,10 @@ if st.session_state.clicked[1]:
             llm,
             df,
             verbose=True,
-            allow_dangerous_code=True
+            allow_dangerous_code=True,
+            include_df_in_prompt=False,  # Do not include the dataframe in the prompt
+            number_of_head_rows=5  # Limit the number of rows included in the prompt if needed
         )
-
 
         #Functions main
         @st.cache_data
