@@ -115,19 +115,19 @@ if st.session_state.clicked[1]:
             return
 
          
-        "def function_question_variable():
-            "st.line_chart(df, y =[user_question_variable])
-            "summary_statistics = pandas_agent.run(f"Give me a summary of the statistics of {user_question_variable}")
-            "st.write(summary_statistics)
-            "normality = pandas_agent.run(f"Check for normality or specific distribution shapes of {user_question_variable}")
-            "st.write(normality)
-            "outliers = pandas_agent.run(f"Assess the presence of outliers of {user_question_variable}")
-            "st.write(outliers)
-            "trends = pandas_agent.run(f"Analyse trends, seasonality, and cyclic patterns of {user_question_variable}")
-            "st.write(trends)
-           "missing_values = pandas_agent.run(f"Determine the extent of missing values of {user_question_variable}")
-           "st.write(missing_values)
-            "return
+         #def function_question_variable():
+             #st.line_chart(df, y =[user_question_variable])
+             #summary_statistics = pandas_agent.run(f"Give me a summary of the statistics of {user_question_variable}")
+             #st.write(summary_statistics)
+             #normality = pandas_agent.run(f"Check for normality or specific distribution shapes of {user_question_variable}")
+             #st.write(normality)
+             #outliers = pandas_agent.run(f"Assess the presence of outliers of {user_question_variable}")
+             #st.write(outliers)
+             #trends = pandas_agent.run(f"Analyse trends, seasonality, and cyclic patterns of {user_question_variable}")
+             #st.write(trends)
+            #missing_values = pandas_agent.run(f"Determine the extent of missing values of {user_question_variable}")
+            #st.write(missing_values)
+             #return
         
          
         def function_question_dataframe():
