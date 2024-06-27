@@ -5,3 +5,4 @@ pandas
 langchain
 matplotlib
 seaborn
+openai
