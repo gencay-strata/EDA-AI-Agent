@@ -1,7 +1,7 @@
 #Import required libraries
 import streamlit as st
 import pandas as pd
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain_experimental.agents import create_pandas_dataframe_agent
 import matplotlib.pyplot as plt
 import seaborn as sns
