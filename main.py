@@ -1,4 +1,5 @@
 #Import required libraries
+from openai import OpenAI
 import streamlit as st
 import pandas as pd
 from langchain_community.llms import OpenAI
