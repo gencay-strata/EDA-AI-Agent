@@ -1,3 +1,4 @@
+langchain_experimental
 langchain_community
 streamlit
 pandas
