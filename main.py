@@ -153,7 +153,7 @@ if st.session_state.clicked[1]:
         st.subheader('Variable of study')
         user_question_variable = st.text_input('What variable are you interested in')
         if user_question_variable is not None and user_question_variable !="":
-            function_question_variable(df, user_question_variable)
+            function_question_variable()
 
             st.subheader('Further study')
 
