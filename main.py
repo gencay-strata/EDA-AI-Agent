@@ -58,7 +58,8 @@ if st.session_state.clicked[1]:
             allow_dangerous_code=True,
             include_df_in_prompt=False,  # Do not include the dataframe in the prompt
             number_of_head_rows=5,  # Limit the number of rows included in the prompt if needed
-            max_execution_time = 400
+            max_execution_time = 400,
+            max_iterations= 100000
         )
 
         # Functions main
