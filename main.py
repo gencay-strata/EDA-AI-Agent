@@ -19,7 +19,7 @@ st.write("Hello, 👋 I am your AI Assistant and I am here to help you with your
 
 # Explanation sidebar
 with st.sidebar:
-    st.write('*Your Data Science Adventure Begins with a CSV File.*')
+    st.write('*Your Data Science Adventure Begins with an CSV File.*')
     st.caption('''**Let's start a Data Science journey, with Stratascratch, shall we?**
     ''')
 
@@ -27,14 +27,13 @@ with st.sidebar:
 
     st.caption("<p style ='text-align:center'> Made by StrataScratch</p>", unsafe_allow_html=True)
 
-# Initialize the key in session state
+# Initialise the key in session state
 if 'clicked' not in st.session_state:
     st.session_state.clicked = {1: False}
 
 # Function to update the value in session state
 def clicked(button):
     st.session_state.clicked[button] = True
-
 st.button("Let's get started", on_click=clicked, args=[1])
 if st.session_state.clicked[1]:
     user_csv = st.file_uploader("Upload your file here", type="csv")
@@ -51,21 +50,17 @@ if st.session_state.clicked[1]:
             steps_eda = llm('What are the steps of EDA')
             return steps_eda
 
-        # Function to create the agent
-        def create_agent(dataframe):
-            return create_pandas_dataframe_agent(
-                llm,
-                dataframe,
-                verbose=True,
-                allow_dangerous_code=True,
-                include_df_in_prompt=False,  # Do not include the dataframe in the prompt
-                number_of_head_rows=5,  # Limit the number of rows included in the prompt if needed
-                max_execution_time=400,  # Set the total execution time limit
-                max_iterations=100000  # Set the maximum number of iterations
-            )
-
-        if 'pandas_agent' not in st.session_state:
-            st.session_state.pandas_agent = create_agent(df)
+        # Updated code with additional parameters to control prompt size
+        pandas_agent = create_pandas_dataframe_agent(
+            llm,
+            df,
+            verbose=True,
+            allow_dangerous_code=True,
+            include_df_in_prompt=False,  # Do not include the dataframe in the prompt
+            number_of_head_rows=5,  # Limit the number of rows included in the prompt if needed
+            max_execution_time = 400,
+            max_iterations= 100000
+        )
 
         # Functions main
         @st.cache_data(show_spinner=False)
@@ -78,7 +73,7 @@ if st.session_state.clicked[1]:
             st.write("Statistical Summary:")
             st.write(data.describe())
             st.write("**Data Cleaning**")
-            columns_df = st.session_state.pandas_agent.run("Explain the column names")
+            columns_df = pandas_agent.run("Explain the column names")
             st.write(columns_df)
             st.write("**Visualization**")
             # Identify numerical columns
@@ -108,46 +103,36 @@ if st.session_state.clicked[1]:
                 else:
                     st.write("Not enough numerical columns for a correlation heatmap.")
             st.write("**Missing Values**")
-            missing_values = st.session_state.pandas_agent.run("Are there any missing values in this dataset? Start with 'There are'")
+            missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with 'There are'")
             st.write(missing_values)
-
-            # Restart the agent here
-            st.session_state.pandas_agent = create_agent(data)
-
-            st.write("**Duplicates**")
-            duplicates = st.session_state.pandas_agent.run("Are there any duplicates?")
+            duplicates = pandas_agent.run("Are there any duplicates?")
             st.write(duplicates)
-            st.write("**Correlation Analysis**")
-            correlation_analysis = st.session_state.pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
+            correlation_analysis = pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
             st.write(correlation_analysis)
-            st.write("**Outliers**")
-            outliers = st.session_state.pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
+            outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
             st.write(outliers)
-            st.write("**Feature Engineering**")
-            new_features = st.session_state.pandas_agent.run("What new features would be interesting to create?")
+            new_features = pandas_agent.run("What new features would be interesting to create?")
             st.write(new_features)
             return
 
         @st.cache_data(show_spinner=False)
         def function_question_variable(data, variable):
             st.line_chart(data, y=[variable])
-            summary_statistics = st.session_state.pandas_agent.run(f"Give me a summary of the statistics of {variable}")
+            summary_statistics = pandas_agent.run(f"Give me a summary of the statistics of {variable}")
             st.write(summary_statistics)
-            normality = st.session_state.pandas_agent.run(f"Check for normality or specific distribution shapes of {variable}")
+            normality = pandas_agent.run(f"Check for normality or specific distribution shapes of {variable}")
             st.write(normality)
-            outliers = st.session_state.pandas_agent.run(f"Assess the presence of outliers of {variable}")
+            outliers = pandas_agent.run(f"Assess the presence of outliers of {variable}")
             st.write(outliers)
-            trends = st.session_state.pandas_agent.run(f"Analyse trends, seasonality, and cyclic patterns of {variable}")
+            trends = pandas_agent.run(f"Analyse trends, seasonality, and cyclic patterns of {variable}")
             st.write(trends)
-            missing_values = st.session_state.pandas_agent.run(f"Determine the extent of missing values of {variable}")
+            missing_values = pandas_agent.run(f"Determine the extent of missing values of {variable}")
             st.write(missing_values)
             return
         
         @st.cache_data(show_spinner=False)
         def function_question_dataframe(question):
-            # Restarting the agent in the middle of the code to reset the limit
-            st.session_state.pandas_agent = create_agent(df)
-            dataframe_info = st.session_state.pandas_agent.run(question)
+            dataframe_info = pandas_agent.run(question)
             st.write(dataframe_info)
             return
 
@@ -174,4 +159,3 @@ if st.session_state.clicked[1]:
                 function_question_dataframe(user_question_dataframe)
             if user_question_dataframe in ("no", "No"):
                 st.write("")
-
