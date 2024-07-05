@@ -104,9 +104,9 @@ if st.session_state.clicked[1]:
                 else:
                     st.write("Not enough numerical columns for a correlation heatmap.")
             st.write("**Missing Values**")
-            missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with 'There are:'")
+            missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with There are:'")
             st.write(missing_values)
-            duplicates = pandas_agent.run("Are there any duplicates?" Start with "There are:")
+            duplicates = pandas_agent.run("Are there any duplicates? Start with "There are:")
             st.write(""**Duplicates**"")
             correlation_analysis = pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
             st.write(""**Correlation_analysis**"")
