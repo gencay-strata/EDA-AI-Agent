@@ -1,4 +1,4 @@
-f#Import required libraries
+#Import required libraries
 from openai import OpenAI
 import streamlit as st
 import pandas as pd
