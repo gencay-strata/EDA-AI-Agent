@@ -142,6 +142,12 @@ if st.session_state.clicked[1]:
                 st.write(data[data.duplicated()])
 
             st.write("**Correlation Analysis**")
+
+            st.write("""
+            Correlation analysis helps us understand the relationships between different numerical variables in the dataset. 
+            It measures the strength and direction of the linear relationship between pairs of variables. 
+            A correlation matrix and heatmap can visually represent these relationships.
+            """)
             
             # Check if there are any numerical columns in the dataset
             numerical_columns = data.select_dtypes(include=['number']).columns
@@ -175,6 +181,12 @@ if st.session_state.clicked[1]:
         # Function to analyze a specific variable
         def function_question_variable(data, variable):
             st.subheader("Summary Statistics")
+            st.write("""
+            Summary statistics provide a quick overview of the dataset, 
+            highlighting the central tendency, dispersion, and shape of the data's distribution. 
+            These metrics are essential for understanding the overall characteristics of the dataset.
+            Let's take a look at the summary statistics for the numerical columns in our dataset.
+            """)
             summary_statistics = data[variable].describe()
             st.write(summary_statistics)
 
