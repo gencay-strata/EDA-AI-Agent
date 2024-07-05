@@ -104,12 +104,12 @@ if st.session_state.clicked[1]:
                 else:
                     st.write("Not enough numerical columns for a correlation heatmap.")
             st.write("**Missing Values**")
-            missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with 'There are'")
+            missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with 'There are:'")
             st.write(missing_values)
-            duplicates = pandas_agent.run("Are there any duplicates?")
-            st.write(duplicates)
+            duplicates = pandas_agent.run("Are there any duplicates?" Start with "There are:")
+            st.write(""**Duplicates**"")
             correlation_analysis = pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
-            st.write(correlation_analysis)
+            st.write(""**Correlation_analysis**"")
             outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
             st.write(outliers)
             new_features = pandas_agent.run("What new features would be interesting to create?")
@@ -118,18 +118,18 @@ if st.session_state.clicked[1]:
 
         @st.cache_data(show_spinner=False)
         def function_question_variable(data, variable):
-            st.write("Summary Statistics:")
+            st.write("**Summary Statistics**")
             summary_statistics = data[variable].describe()
             st.write(summary_statistics)
 
-            st.write("Normality Check:")
+            st.write("**Normality Check**")
             fig, ax = plt.subplots()
             sns.histplot(data[variable], kde=True, ax=ax)
             st.pyplot(fig)
             normality_test = stats.normaltest(data[variable].dropna())
             st.write(f"Normality test result: {normality_test}")
 
-            st.write("Outliers:")
+            st.write("**Outliers**")
             fig, ax = plt.subplots()
             sns.boxplot(x=data[variable], ax=ax)
             st.pyplot(fig)
@@ -142,12 +142,12 @@ if st.session_state.clicked[1]:
             st.write(f"Number of outliers: {len(outliers)}")
             st.write(outliers)
 
-            st.write("Trends, Seasonality, and Cyclic Patterns:")
+            st.write("**Trends, Seasonality, and Cyclic Patterns**")
             fig, ax = plt.subplots()
             data[variable].plot(ax=ax)
             st.pyplot(fig)
 
-            st.write("Missing Values:")
+            st.write("**Missing Values**")
             missing_values = data[variable].isnull().sum()
             st.write(f"Number of missing values: {missing_values}")
             return
