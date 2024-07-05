@@ -120,7 +120,7 @@ if st.session_state.clicked[1]:
                 st.write(f"There are {duplicates} duplicate values in this dataset.")
                 st.write(data[data.duplicated()])
             st.write("**Correlation Analysis**")
-            correlation_analysis = pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
+            correlation_analysis = pandas_agent.run("Calculate correlations.")
             st.write(correlation_analysis)
             st.write("**Outliers**")
             outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
