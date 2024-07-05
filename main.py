@@ -143,6 +143,10 @@ if st.session_state.clicked[1]:
             outliers = pandas_agent.run("Identify outliers in the data.")
             st.write(outliers)
             st.write("**Feature Engineering**")
+            st.write("""Feature engineering is the process of using domain knowledge to create new features that make machine learning algorithms work better. 
+    Some common techniques include combining existing features, creating interaction terms, and encoding categorical variables.
+    Here are some suggestions for feature engineering based on common practices:""")
+
             new_features = pandas_agent.run("What new features would be interesting to create?")
             st.write(new_features)
             return
