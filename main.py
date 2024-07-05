@@ -222,10 +222,15 @@ if st.session_state.clicked[1]:
             fig, ax = plt.subplots()
             if pd.api.types.is_numeric_dtype(data[variable]):
                 data[variable].plot(ax=ax)
+                ax.set_xlabel("Index")  # X-axis label
+                ax.set_ylabel(variable)  # Y-axis label
+                ax.set_title(f"Trends, Seasonality, and Cyclic Patterns in {variable}")  # Title
             else:
                 sns.countplot(x=data[variable], ax=ax)
+                ax.set_xlabel(variable)  # X-axis label
+                ax.set_ylabel("Count")  # Y-axis label
+                ax.set_title(f"Count Plot of {variable}")  # Title
             st.pyplot(fig)
-
             st.subheader("Missing Values")
             missing_values = data[variable].isnull().sum()
             st.write(f"Number of missing values: {missing_values}")
