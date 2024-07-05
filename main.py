@@ -6,6 +6,7 @@ from langchain_community.llms import OpenAI
 from langchain_experimental.agents import create_pandas_dataframe_agent
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats
 
 # Set your API key directly
 
@@ -117,17 +118,38 @@ if st.session_state.clicked[1]:
 
         @st.cache_data(show_spinner=False)
         def function_question_variable(data, variable):
-            st.line_chart(data, y=[variable])
-            summary_statistics = pandas_agent.run(f"Give me a summary of the statistics of {variable}")
+            st.write("Summary Statistics:")
+            summary_statistics = data[variable].describe()
             st.write(summary_statistics)
-            normality = pandas_agent.run(f"Check for normality or specific distribution shapes of {variable}")
-            st.write(normality)
-            outliers = pandas_agent.run(f"Assess the presence of outliers of {variable}")
+
+            st.write("Normality Check:")
+            fig, ax = plt.subplots()
+            sns.histplot(data[variable], kde=True, ax=ax)
+            st.pyplot(fig)
+            normality_test = stats.normaltest(data[variable].dropna())
+            st.write(f"Normality test result: {normality_test}")
+
+            st.write("Outliers:")
+            fig, ax = plt.subplots()
+            sns.boxplot(x=data[variable], ax=ax)
+            st.pyplot(fig)
+            q1 = data[variable].quantile(0.25)
+            q3 = data[variable].quantile(0.75)
+            iqr = q3 - q1
+            lower_bound = q1 - 1.5 * iqr
+            upper_bound = q3 + 1.5 * iqr
+            outliers = data[(data[variable] < lower_bound) | (data[variable] > upper_bound)]
+            st.write(f"Number of outliers: {len(outliers)}")
             st.write(outliers)
-            trends = pandas_agent.run(f"Analyse trends, seasonality, and cyclic patterns of {variable}")
-            st.write(trends)
-            missing_values = pandas_agent.run(f"Determine the extent of missing values of {variable}")
-            st.write(missing_values)
+
+            st.write("Trends, Seasonality, and Cyclic Patterns:")
+            fig, ax = plt.subplots()
+            data[variable].plot(ax=ax)
+            st.pyplot(fig)
+
+            st.write("Missing Values:")
+            missing_values = data[variable].isnull().sum()
+            st.write(f"Number of missing values: {missing_values}")
             return
         
         @st.cache_data(show_spinner=False)
