@@ -59,7 +59,7 @@ if st.session_state.clicked[1]:
             include_df_in_prompt=False,  # Do not include the dataframe in the prompt
             number_of_head_rows=5,  # Limit the number of rows included in the prompt if needed
             max_execution_time = 400,
-            max_iterations= 100000
+            max_iterations= 20
         )
 
         # Functions main
@@ -140,7 +140,7 @@ if st.session_state.clicked[1]:
                 st.pyplot(fig)
 
             st.write("**Outliers**")
-            outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
+            outliers = pandas_agent.run("Identify outliers in the data.")
             st.write(outliers)
             st.write("**Feature Engineering**")
             new_features = pandas_agent.run("What new features would be interesting to create?")
