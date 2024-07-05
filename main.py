@@ -107,9 +107,9 @@ if st.session_state.clicked[1]:
             missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with: There are:'")
             st.write(missing_values)
             duplicates = pandas_agent.run("Are there any duplicates?.Start with: There are:")
-            st.write(""**Duplicates**"")
+            st.write(""Duplicates"")
             correlation_analysis = pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
-            st.write(""**Correlation_analysis**"")
+            st.write(""Correlation_analysis"")
             outliers = pandas_agent.run("Identify outliers in the data. Start with: There are:'")
             st.write(outliers)
             new_features = pandas_agent.run("What new features would be interesting to create?")
@@ -118,7 +118,7 @@ if st.session_state.clicked[1]:
 
         @st.cache_data(show_spinner=False)
         def function_question_variable(data, variable):
-            st.write("**Summary Statistics**")
+            st.write("Summary Statistics")
             summary_statistics = data[variable].describe()
             st.write(summary_statistics)
 
