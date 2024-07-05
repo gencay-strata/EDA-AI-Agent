@@ -82,6 +82,12 @@ if st.session_state.clicked[1]:
             columns_df = pandas_agent.run("Explain the column names")
             st.write(columns_df)
             st.write("**Visualization**")
+            st.write("""
+            Data visualization helps understand the distribution, trends, and patterns within the dataset. 
+            It provides a graphical representation of data, making it easier to identify relationships and outliers. 
+            Let's create some visualizations for our numerical columns.
+            """)
+
             # Identify numerical columns
             numerical_columns = data.select_dtypes(include=['float64', 'int64']).columns.tolist()
             if len(numerical_columns) == 0:
@@ -109,6 +115,11 @@ if st.session_state.clicked[1]:
                 else:
                     st.write("Not enough numerical columns for a correlation heatmap.")
             st.write("**Missing Values**")
+            st.write("""
+            Missing values can significantly impact the analysis and performance of machine learning models. 
+            Identifying and handling missing data is a crucial part of data cleaning. 
+            Let's check if there are any missing values in our dataset and decide on appropriate strategies to address them.
+            """)
             missing_values = data.isnull().sum()
             total_missing = missing_values.sum()
             if total_missing == 0:
@@ -118,6 +129,11 @@ if st.session_state.clicked[1]:
                 st.write(missing_values)
             
             st.write("**Duplicate Values**")
+            st.write("""
+            Duplicate entries can distort analyses and lead to biased results. 
+            It's important to identify and remove duplicate records to ensure the integrity of the dataset. 
+            Let's see if there are any duplicate values in our dataset.
+            """)
             duplicates = data.duplicated().sum()
             if duplicates == 0:
                 st.write("There are no duplicate values in this dataset.")
