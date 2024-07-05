@@ -121,7 +121,7 @@ if st.session_state.clicked[1]:
                 st.write(data[data.duplicated()])
 
             st.write("**Correlation Analysis**")
-
+            
             # Check if there are any numerical columns in the dataset
             numerical_columns = data.select_dtypes(include=['number']).columns
             
@@ -137,7 +137,6 @@ if st.session_state.clicked[1]:
                 sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
                 st.pyplot(fig)
 
-            st.write(correlation_analysis)
             st.write("**Outliers**")
             outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
             st.write(outliers)
