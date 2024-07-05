@@ -214,6 +214,11 @@ if st.session_state.clicked[1]:
                 st.write("Normality Check, Outliers analysis skipped for non-numeric data.")
 
             st.subheader("Trends, Seasonality, and Cyclic Patterns")
+            st.write("""
+            Analyzing trends, seasonality, and cyclic patterns in the data can reveal important insights about the underlying processes. 
+            Trends show long-term movements in the data, seasonality captures regular fluctuations, 
+            and cyclic patterns represent non-seasonal cycles. 
+            Let's visualize these aspects for the selected variable """ )
             fig, ax = plt.subplots()
             if pd.api.types.is_numeric_dtype(data[variable]):
                 data[variable].plot(ax=ax)
