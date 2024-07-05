@@ -119,8 +119,24 @@ if st.session_state.clicked[1]:
             else:
                 st.write(f"There are {duplicates} duplicate values in this dataset.")
                 st.write(data[data.duplicated()])
+
             st.write("**Correlation Analysis**")
-            correlation_analysis = pandas_agent.run("Calculate correlations.")
+
+            # Check if there are any numerical columns in the dataset
+            numerical_columns = data.select_dtypes(include=['number']).columns
+            
+            if len(numerical_columns) == 0:
+                st.write("No numerical data available for correlation analysis.")
+            else:
+                correlation_matrix = data[numerical_columns].corr()
+                st.write("Correlation Matrix:")
+                st.write(correlation_matrix)
+            
+                st.write("Correlation Heatmap:")
+                fig, ax = plt.subplots(figsize=(10, 8))
+                sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
+                st.pyplot(fig)
+
             st.write(correlation_analysis)
             st.write("**Outliers**")
             outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
