@@ -6,3 +6,4 @@ langchain
 matplotlib
 seaborn
 openai
+scipy
