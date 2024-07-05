@@ -104,50 +104,61 @@ if st.session_state.clicked[1]:
                 else:
                     st.write("Not enough numerical columns for a correlation heatmap.")
             st.write("**Missing Values**")
-            missing_values = pandas_agent.run("How many missing values does this dataframe have? Start the answer with 'There are")
+            missing_values = pandas_agent.run("Are there any missing values in this dataset? Start with 'There are'")
             st.write(missing_values)
-            duplicates = pandas_agent.run("Are there any duplicate values and if so where?")
+            st.write("**Duplicate Values**")
+            duplicates = pandas_agent.run("Are there any duplicates?")
             st.write(duplicates)
+            st.write("**Correlation Analysis**")
             correlation_analysis = pandas_agent.run("Calculate correlations between numerical variables to identify potential relationships.")
             st.write(correlation_analysis)
-            outliers = pandas_agent.run("Identify outliers in the data that may be erroneous or that may have a significant impact on the analysis.")
+            st.write("**Outliers**")
+            outliers = pandas_agent.run("Identify outliers in the data. Start with 'There are:'")
             st.write(outliers)
+            st.write("**Feature Engineering**")
             new_features = pandas_agent.run("What new features would be interesting to create?")
             st.write(new_features)
             return
 
         @st.cache_data(show_spinner=False)
+        # Function to analyze a specific variable
         def function_question_variable(data, variable):
-            st.write("Summary Statistics:")
+            st.subheader("Summary Statistics")
             summary_statistics = data[variable].describe()
             st.write(summary_statistics)
 
-            st.write("Normality Check:")
-            fig, ax = plt.subplots()
-            sns.histplot(data[variable], kde=True, ax=ax)
-            st.pyplot(fig)
-            normality_test = stats.normaltest(data[variable].dropna())
-            st.write(f"Normality test result: {normality_test}")
+            if pd.api.types.is_numeric_dtype(data[variable]):
+                st.subheader("Normality Check")
+                fig, ax = plt.subplots()
+                sns.histplot(data[variable], kde=True, ax=ax)
+                st.pyplot(fig)
+                normality_test = stats.normaltest(data[variable].dropna())
+                st.write(f"Normality test result: Statistic={normality_test.statistic:.2f}, p-value={normality_test.pvalue:.2f}")
 
-            st.write("Outliers:")
-            fig, ax = plt.subplots()
-            sns.boxplot(x=data[variable], ax=ax)
-            st.pyplot(fig)
-            q1 = data[variable].quantile(0.25)
-            q3 = data[variable].quantile(0.75)
-            iqr = q3 - q1
-            lower_bound = q1 - 1.5 * iqr
-            upper_bound = q3 + 1.5 * iqr
-            outliers = data[(data[variable] < lower_bound) | (data[variable] > upper_bound)]
-            st.write(f"Number of outliers: {len(outliers)}")
-            st.write(outliers)
+                st.subheader("Outliers")
+                fig, ax = plt.subplots()
+                sns.boxplot(x=data[variable], ax=ax)
+                st.pyplot(fig)
+                q1 = data[variable].quantile(0.25)
+                q3 = data[variable].quantile(0.75)
+                iqr = q3 - q1
+                lower_bound = q1 - 1.5 * iqr
+                upper_bound = q3 + 1.5 * iqr
+                outliers = data[(data[variable] < lower_bound) | (data[variable] > upper_bound)]
+                st.write(f"Number of outliers: {len(outliers)}")
+                st.write(outliers)
+            else:
+                st.write("Normality Check, Outliers analysis skipped for non-numeric data.")
 
-            st.write("Trends, Seasonality, and Cyclic Patterns:")
+            st.subheader("Trends, Seasonality, and Cyclic Patterns")
             fig, ax = plt.subplots()
-            data[variable].plot(ax=ax)
+            if pd.api.types.is_numeric_dtype(data[variable]):
+                data[variable].plot(ax=ax)
+            else:
+                sns.countplot(x=data[variable], ax=ax)
             st.pyplot(fig)
 
-            st.write("Missing Values:")
+            st.subheader("Missing Values")
             missing_values = data[variable].isnull().sum()
             st.write(f"Number of missing values: {missing_values}")
 
