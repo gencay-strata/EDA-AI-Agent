@@ -9,7 +9,6 @@ import seaborn as sns
 from scipy import stats
 
 # Set your API key directly
-
 apikey = st.secrets["openai"]["api_key"]
 
 # Title
