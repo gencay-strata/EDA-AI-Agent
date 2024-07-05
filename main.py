@@ -66,10 +66,13 @@ if st.session_state.clicked[1]:
         @st.cache_data(show_spinner=False)
         def function_agent(data):
             st.write("**Data Overview**")
+            st.write("Let's start by taking a quick look at your dataset. We'll examine the first few rows to understand the structure of the data.")
             st.write("The first rows of your dataset look like this:")
             st.write(data.head())
+            st.write("Now, let's also look at the last few rows to ensure no surprises at the end.")
             st.write("Last rows of your dataset look like this:")
             st.write(data.tail())
+            st.write("Next, we'll look at a statistical dataset summary. This will give us a sense of the dataset's distribution's central tendency, dispersion, and shape.")
             st.write("Statistical Summary:")
             st.write(data.describe())
             st.write("**Data Cleaning**")
