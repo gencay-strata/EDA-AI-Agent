@@ -1,4 +1,4 @@
-#Import required libraries
+f#Import required libraries
 from openai import OpenAI
 import streamlit as st
 import pandas as pd
@@ -76,6 +76,9 @@ if st.session_state.clicked[1]:
             st.write("Statistical Summary:")
             st.write(data.describe())
             st.write("**Data Cleaning**")
+            st.write(""" Data cleaning involves preparing the dataset for analysis by addressing issues such as missing values, duplicate entries, 
+            and inconsistencies. This step ensures the data is accurate, complete, and ready for further analysis. 
+            Let's start by examining the column names and cleaning the data if necessary. """)
             columns_df = pandas_agent.run("Explain the column names")
             st.write(columns_df)
             st.write("**Visualization**")
@@ -140,6 +143,7 @@ if st.session_state.clicked[1]:
                 st.pyplot(fig)
 
             st.write("**Outliers**")
+            st.write("Here, we'll identify outliers in the data using statistical methods.")
             outliers = pandas_agent.run("Identify outliers in the data.")
             st.write(outliers)
             st.write("**Feature Engineering**")
