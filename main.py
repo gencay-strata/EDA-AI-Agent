@@ -1,12 +1,19 @@
 #Import required libraries
-from openai import OpenAI
+import os
+from dotenv import load_dotenv, find_dotenv
 import streamlit as st
 import pandas as pd
-from langchain_community.llms import OpenAI
+from langchain.llms import OpenAI
 from langchain_experimental.agents import create_pandas_dataframe_agent
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, mean_squared_error
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import LabelEncoder
 
 # Set your API key directly
 apikey = st.secrets["openai"]["api_key"]
