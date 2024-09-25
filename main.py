@@ -200,17 +200,117 @@ if st.session_state.clicked[1]:
 
             return data
 
-        # Machine Learning Model Selection
+
         def model_selection(data):
             st.subheader('Machine Learning Models')
-            st.write("Let's build and evaluate some machine learning models. Please select a model to proceed:")
+            st.write("Let's preprocess the data and build some machine learning models. Please follow the steps below:")
+
+            # Initialize session state for selections if not already set
+            if 'scaling_option' not in st.session_state:
+                st.session_state.scaling_option = "None"
+            if 'reduction_option' not in st.session_state:
+                st.session_state.reduction_option = "None"
+            if 'n_components' not in st.session_state:
+                st.session_state.n_components = 2
+            if 'model_choice' not in st.session_state:
+                st.session_state.model_choice = "Linear Regression"
+            if 'target_column' not in st.session_state:
+                st.session_state.target_column = data.columns[0] if len(data.columns) > 0 else None
+
+            # Subheader for Label Encoding
+            st.subheader("Label Encoding for Categorical Variables")
+            st.write("Turning categorical variables into numerical ones is crucial for many machine learning models.")
+
+            # Identify and encode categorical columns
+            categorical_columns = data.select_dtypes(include=['object']).columns.tolist()
+            if categorical_columns:
+                st.write(f"Categorical columns: {', '.join(categorical_columns)}")
+                for col in categorical_columns:
+                    data[col] = LabelEncoder().fit_transform(data[col])
+                st.write("Categorical variables have been encoded into numerical values.")
+            else:
+                st.write("No categorical columns to encode.")
+
+            # Subheader for Normalization
+            numerical_columns = data.select_dtypes(include=['float64', 'int64']).columns.tolist()
+            if numerical_columns:
+                st.subheader("Normalization")
+                st.write("Scaling numerical features is essential to ensure that all features contribute equally to the model.")
+
+                scaling_option = st.selectbox(
+                    "Select scaling method:", 
+                    ["None", "Standardization", "Min-Max Scaling"], 
+                    index=["None", "Standardization", "Min-Max Scaling"].index(st.session_state.scaling_option)
+                )
+                st.session_state.scaling_option = scaling_option
+
+                if scaling_option == "Standardization":
+                    from sklearn.preprocessing import StandardScaler
+                    scaler = StandardScaler()
+                    data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+                    st.write("Numerical features have been standardized.")
+                elif scaling_option == "Min-Max Scaling":
+                    from sklearn.preprocessing import MinMaxScaler
+                    scaler = MinMaxScaler()
+                    data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+                    st.write("Numerical features have been scaled using Min-Max scaling.")
+                else:
+                    st.write("No scaling applied.")
+            else:
+                st.write("No numerical columns to normalize.")
+
+            # Subheader for Dimensionality Reduction
+            if numerical_columns:
+                st.subheader("Dimensionality Reduction")
+                st.write("Reducing the number of features can help improve model performance and reduce overfitting.")
+
+                reduction_option = st.selectbox(
+                    "Select dimensionality reduction method:", 
+                    ["None", "PCA"], 
+                    index=["None", "PCA"].index(st.session_state.reduction_option)
+                )
+                st.session_state.reduction_option = reduction_option
+
+                if reduction_option == "PCA":
+                    n_components = st.slider(
+                        "Select number of components:", 
+                        1, len(numerical_columns), 
+                        st.session_state.n_components
+                    )
+                    st.session_state.n_components = n_components
+
+                    from sklearn.decomposition import PCA
+                    pca = PCA(n_components=n_components)
+                    data_pca = pca.fit_transform(data[numerical_columns])
+                    data_pca_df = pd.DataFrame(data_pca, columns=[f'PC{i+1}' for i in range(n_components)])
+                    
+                    # Preserve original column names after PCA
+                    for i, col in enumerate(numerical_columns):
+                        if i < n_components:
+                            data_pca_df[col] = data_pca_df.pop(f'PC{i+1}')
+                            
+                    data = pd.concat([data.drop(columns=numerical_columns), data_pca_df], axis=1)
+                    st.write(f"PCA applied, reduced to {n_components} components.")
+                else:
+                    st.write("No dimensionality reduction applied.")
+
+            # Ensure target_column is valid
+            if st.session_state.target_column not in data.columns:
+                st.session_state.target_column = data.columns[0] if len(data.columns) > 0 else None
+
+            target_column = st.selectbox("Select the target column", data.columns, index=list(data.columns).index(st.session_state.target_column))
+            st.session_state.target_column = target_column
+
+            # Subheader for Model Selection
+            st.subheader("Model Selection")
+            st.write("Let's choose and train a machine learning model based on the preprocessed data.")
 
             model_choice = st.selectbox(
                 "Choose a model",
-                ("Linear Regression", "Random Forest Classifier", "Support Vector Machine (SVM)")
+                ("Linear Regression", "Random Forest Classifier", "Support Vector Machine (SVM)"),
+                index=["Linear Regression", "Random Forest Classifier", "Support Vector Machine (SVM)"].index(st.session_state.model_choice)
             )
-
-            target_column = st.selectbox("Select the target column", data.columns)
+            st.session_state.model_choice = model_choice
 
             if model_choice and target_column:
                 st.write(f"You selected: {model_choice}")
@@ -221,19 +321,13 @@ if st.session_state.clicked[1]:
                     X = data.drop(columns=[target_column])
                     y = data[target_column]
 
-                    # Ensure all features are numerical
-                    X = pd.get_dummies(X, drop_first=True)
-                    if y.dtype == 'object':
-                        le = LabelEncoder()
-                        y = le.fit_transform(y)
-
                     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
                     # Ensure that target column is appropriate for the selected model
-                    if model_choice == "Linear Regression" and y.dtype == 'object':
+                    if model_choice == "Linear Regression" and not pd.api.types.is_numeric_dtype(y):
                         st.write("Linear Regression cannot be applied to categorical target variables. Please select a numerical target column.")
                         return
-                    elif model_choice in ["Random Forest Classifier", "Support Vector Machine (SVM)"] and y.dtype != 'object':
+                    elif model_choice in ["Random Forest Classifier", "Support Vector Machine (SVM)"] and pd.api.types.is_numeric_dtype(y):
                         st.write(f"{model_choice} is typically used for classification tasks. Please select a categorical target column.")
                         return
 
@@ -242,23 +336,35 @@ if st.session_state.clicked[1]:
                         model = LinearRegression()
                         model.fit(X_train, y_train)
                         y_pred = model.predict(X_test)
-                        st.write("Mean Squared Error:", mean_squared_error(y_test, y_pred))
-            
+                        mse = mean_squared_error(y_test, y_pred)
+                        accuracy = model.score(X_test, y_test) * 100
+                        st.write("Mean Squared Error:", mse)
+                        st.write("Accuracy:", accuracy, "%")
+
                     elif model_choice == "Random Forest Classifier":
                         model = RandomForestClassifier()
                         model.fit(X_train, y_train)
                         y_pred = model.predict(X_test)
                         st.write("Classification Report:")
                         st.write(classification_report(y_test, y_pred))
-            
+                        accuracy = model.score(X_test, y_test) * 100
+                        st.write("Accuracy:", accuracy, "%")
+
                     elif model_choice == "Support Vector Machine (SVM)":
                         model = SVC()
                         model.fit(X_train, y_train)
                         y_pred = model.predict(X_test)
                         st.write("Classification Report:")
                         st.write(classification_report(y_test, y_pred))
+                        accuracy = model.score(X_test, y_test) * 100
+                        st.write("Accuracy:", accuracy, "%")
 
                     st.write("Model training and evaluation complete.")
+
+
+
+
+
 
         @st.cache_data(show_spinner=False)
         # Function to analyze a specific variable
@@ -347,3 +453,4 @@ if st.session_state.clicked[1]:
                 function_question_dataframe(user_question_dataframe)
             if user_question_dataframe in ("no", "No"):
                 st.write("")
+
